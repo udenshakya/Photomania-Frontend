@@ -2,7 +2,7 @@
 
 Photomania Front-end
 
-This is a Photomania project that allows user to explore interesing post shared by others and share your posts on the platform.
+This is Photomania project that allows user to explore interesting post shared by others and share your posts on the platform.
 
 ## Table of contents
 
@@ -50,6 +50,10 @@ npm run dev
 ## ENV Variables
 
       |
+
+## Figma Wireframe
+
+[Figma Link](https://www.figma.com/design/6m6Ho3zQdTY3GaUYNto4fI/Untitled?node-id=0-1&t=XDzjm4W4nwEFnbLK-0)
 
 ## Author
 
