@@ -1,5 +1,7 @@
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "./Button";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 
@@ -9,14 +11,16 @@ const Navbar = () => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
 
-    // setLoggedIn(token !== null && token !== undefined);
-    setLoggedIn(!!token); // Set loggedIn to true if token is present, false otherwise
+    const token = Cookies.get("token");
+
+    if (token) setLoggedIn(true);
   }, [login]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    // localStorage.removeItem("token");
+    Cookies.remove("token");
     setLoggedIn(false);
   };
 
@@ -48,32 +52,17 @@ const Navbar = () => {
             </Link>
           )}
           {loggedIn ? (
-            <button
-              className="text-lg rounded-full text-white border-2 border-gray-400 hover:bg-white hover:text-black transition-all duration-300 px-4 py-1"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <Button onClick={handleLogout}>Logout</Button>
           ) : (
             <>
-              <button
-                className="text-lg rounded-full text-white border-2 border-gray-400 hover:bg-white hover:text-black transition-all duration-300 px-4 py-1"
-                onClick={() => setLogin(true)}
-              >
-                Login
-              </button>
-              <button
-                className="text-lg rounded-full text-white border-2 border-gray-400 hover:bg-white hover:text-black transition-all duration-300 px-4 py-1"
-                onClick={() => setRegister(true)}
-              >
-                Register
-              </button>
+              <Button onClick={() => setLogin(true)}>Login</Button>
+              <Button onClick={() => setRegister(true)}>Register</Button>
             </>
           )}
         </div>
       </nav>
       <RegisterModal register={register} setRegister={setRegister} />
-      <LoginModal login={login} setLogin={setLogin} setLoggedIn={setLoggedIn} />
+      <LoginModal login={login} setLogin={setLogin} />
     </>
   );
 };

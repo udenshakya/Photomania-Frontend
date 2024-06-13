@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import Modal from "./Modal";
 
@@ -49,11 +50,14 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
     },
     onSuccess: (data) => {
       console.log("Registration successful:", data.message);
+      toast.success("Register successful!");
+
       setRegister(false);
       reset();
     },
     onError: (error: any) => {
       console.error("Registration failed:", error);
+      toast.error("Registration failed!");
     },
   });
 
@@ -106,7 +110,7 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
         >
           Register
         </button>
-        {error && <p className="text-red-500">{(error as Error).message}</p>}
+        {error && <p className="text-red-500">{error.message}</p>}
       </form>
     </Modal>
   );

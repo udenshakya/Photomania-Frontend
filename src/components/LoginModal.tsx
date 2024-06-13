@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
@@ -31,6 +32,7 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
 
   const { mutate, error } = useMutation({
     mutationFn: async (data: FormData) => {
+      //   console.log(error);
       const response = await fetch("http://localhost:8000/api/users/login", {
         method: "POST",
         headers: {
@@ -49,14 +51,15 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
     },
     onSuccess: (data) => {
       console.log("Login successful:", data.message);
-      toast.success("Login successful!"); // Display a success toast
-      localStorage.setItem("token", data.token);
+      toast.success("Login successful!");
+      //   localStorage.setItem("token", data.token);
+      Cookies.set("token", data.token);
       setLogin(false);
       reset();
     },
     onError: (error: any) => {
       console.error("Login failed:", error);
-      toast.error("Login failed!"); // Display an error toast
+      toast.error("Login failed!");
     },
   });
 
@@ -98,7 +101,7 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
         >
           Login
         </button>
-        {error && <p className="text-red-500">{(error as Error).message}</p>}
+        {error && <p className="text-red-500">{error.message}</p>}
       </form>
     </Modal>
   );
