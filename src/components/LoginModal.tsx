@@ -50,7 +50,6 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
       return result;
     },
     onSuccess: (data) => {
-      console.log("Login successful:", data.message);
       toast.success("Login successful!");
       //   localStorage.setItem("token", data.token);
       Cookies.set("token", data.token);
