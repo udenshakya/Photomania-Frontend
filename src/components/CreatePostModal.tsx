@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
+import { queryClient } from "../main";
 import Modal from "./Modal";
 
 type CreatePostModalProps = {
@@ -59,11 +60,12 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log(data.message);
+      await queryClient.invalidateQueries("posts");
       toast.success("Post created successfully!");
       reset();
-      setPreview(null); // Reset the preview
+      setPreview(null);
       onClose();
     },
     onError: (error) => {
@@ -98,19 +100,27 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
           className="flex flex-col gap-7 md:px-11 px-10"
         >
           <div className="flex gap-20 ">
-            <div className="h-[50vh] w-[500px]">
+            <label
+              htmlFor="myFile"
+              className="h-[50vh] w-[500px] cursor-pointer"
+            >
               {preview ? (
                 <img
                   src={preview}
                   alt="Preview"
-                  className="h-full object-cover rounded-lg"
+                  className="h-full object-cover rounded-lg cursor-pointer "
                 />
               ) : (
                 <div className="bg-gray-200 w-full h-full flex justify-center items-center">
                   <p>Upload Image</p>
+                  {/* <img
+                    src="/Upload.png"
+                    alt="upload"
+                    className="w-full h-full object-contain"
+                  /> */}
                 </div>
               )}
-            </div>
+            </label>
             <div className="flex flex-col gap-4 w-[40%] h-[57vh]">
               <label htmlFor="caption">Caption</label>
               <input
@@ -129,7 +139,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
               <textarea
                 {...register("description")}
                 placeholder="Description"
-                rows={4}
+                rows={5}
                 className="bg-gray-200 px-3 py-2 rounded-lg mb-2"
               />
               {errors.description && (
@@ -138,11 +148,11 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 </span>
               )}
 
-              <label htmlFor="myFile">Image</label>
               <input
                 type="file"
+                id="myFile"
                 {...register("myFile")}
-                className="bg-gray-200 px-3 py-2 cursor-pointer rounded-lg mb-2"
+                className="opacity-0"
                 onChange={handleFileChange}
               />
               {errors.myFile && (
