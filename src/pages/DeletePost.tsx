@@ -5,10 +5,22 @@ import { useNavigate } from "react-router";
 import Modal from "../components/Modal";
 import { queryClient } from "../main";
 
-const DeletePost = ({ isOpen, onClose, post, closeSinglePostModal }) => {
+type DeletePostProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  post: any;
+  closeSinglePostModal: () => void;
+};
+
+const DeletePost = ({
+  isOpen,
+  onClose,
+  post,
+  closeSinglePostModal,
+}: DeletePostProps) => {
   const navigate = useNavigate();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const token = Cookies.get("token");
       const decoded = JSON.parse(atob(token?.split(".")[1] || ""));
@@ -31,7 +43,9 @@ const DeletePost = ({ isOpen, onClose, post, closeSinglePostModal }) => {
       return response.json();
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries("posts");
+      await queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
       toast.success("Post deleted successfully!");
       closeSinglePostModal();
       navigate("/");
@@ -51,19 +65,22 @@ const DeletePost = ({ isOpen, onClose, post, closeSinglePostModal }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-[70vw] h-[85vh] flex flex-col items-center justify-center">
+      <div className="w-[70vw] h-[70vh] flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-5">
           Are you sure you want to delete this post?
         </h1>
-        <div className="flex gap-4">
+        <div className="flex gap-4 ">
           <button
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="bg-red-500 text-white px-4 py-2 rounded-xl"
             onClick={handleDelete}
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? "Deleting..." : "Delete"}
+            {isPending ? "Deleting..." : "Delete"}
           </button>
-          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
+          <button
+            className="bg-gray-300 px-4 py-2 rounded-xl"
+            onClick={onClose}
+          >
             Cancel
           </button>
         </div>
