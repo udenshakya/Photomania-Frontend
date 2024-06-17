@@ -8,6 +8,7 @@ const Home = () => {
   const { ref, inView } = useInView();
   const pageSize = 8;
   const [selectedPost, setSelectedPost] = useState(null);
+  const [singlePostModalOpen, setSinglePostModalOpen] = useState(false);
 
   const fetchData = async ({ pageParam = 1 }) => {
     const response = await fetch(
@@ -35,6 +36,16 @@ const Home = () => {
     }
   }, [inView, fetchNextPage]);
 
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setSinglePostModalOpen(true);
+  };
+
+  const handleCloseSinglePostModal = () => {
+    setSelectedPost(null);
+    setSinglePostModalOpen(false);
+  };
+
   if (error) return <div>Error fetching posts</div>;
 
   return (
@@ -54,7 +65,7 @@ const Home = () => {
                   <div
                     key={item.id}
                     className="break-inside-avoid bg-white shadow-md rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-150 cursor-pointer relative"
-                    onClick={() => setSelectedPost(item)}
+                    onClick={() => handlePostClick(item)}
                   >
                     <div className="relative  group ">
                       <img
@@ -84,11 +95,13 @@ const Home = () => {
           </div>
         </>
       )}
-      <SinglePost
-        isOpen={!!selectedPost}
-        onClose={() => setSelectedPost(null)}
-        post={selectedPost}
-      />
+      {selectedPost && (
+        <SinglePost
+          isOpen={singlePostModalOpen}
+          onClose={handleCloseSinglePostModal}
+          post={selectedPost}
+        />
+      )}
     </main>
   );
 };

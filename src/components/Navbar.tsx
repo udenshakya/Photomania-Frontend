@@ -46,7 +46,7 @@ const Navbar = () => {
           {loggedIn && (
             <>
               <Button
-                className={"bg-red-500"}
+                className={"bg-red-600"}
                 onClick={() => setCreatePost(true)}
               >
                 Create Post
