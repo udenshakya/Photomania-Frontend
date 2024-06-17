@@ -1,11 +1,13 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Loader from "../components/Loader";
+import SinglePost from "./SinglePost";
 
 const Home = () => {
   const { ref, inView } = useInView();
   const pageSize = 8;
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const fetchData = async ({ pageParam = 1 }) => {
     const response = await fetch(
@@ -35,8 +37,6 @@ const Home = () => {
 
   if (error) return <div>Error fetching posts</div>;
 
-  console.log(isLoading);
-
   return (
     <main>
       {isLoading ? (
@@ -50,19 +50,26 @@ const Home = () => {
           <div className="p-5 md:p-10">
             <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 w-full mx-auto h-auto space-y-3 pb-28">
               {data?.pages.map((page) =>
-                page.data.map((item: any) => (
+                page.data.map((item) => (
                   <div
                     key={item.id}
-                    className="break-inside-avoid bg-white shadow-md rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-150 cursor-pointer"
+                    className="break-inside-avoid bg-white shadow-md rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-150 cursor-pointer relative"
+                    onClick={() => setSelectedPost(item)}
                   >
-                    <img
-                      className="w-full h-auto"
-                      src={item.imageUrl}
-                      alt={item.caption}
-                    />
+                    <div className="relative  group ">
+                      <img
+                        className="w-full h-auto"
+                        src={item.imageUrl}
+                        alt={item.caption}
+                      />
+                      <div className="absolute bottom-1 left-1 rounded-md px-2 py-1 bg-purple-950  hidden group-hover:block ">
+                        <p className="text-white ">
+                          Author: {item.user.username}
+                        </p>
+                      </div>
+                    </div>
                     <div className="p-4">
                       <p className="font-bold text-lg">{item.caption}</p>
-                      <p className="mt-2 text-gray-600">{item.description}</p>
                       <p className="mt-2 text-gray-600">
                         {new Date(item.createdAt).toLocaleDateString()}
                       </p>
@@ -77,6 +84,11 @@ const Home = () => {
           </div>
         </>
       )}
+      <SinglePost
+        isOpen={!!selectedPost}
+        onClose={() => setSelectedPost(null)}
+        post={selectedPost}
+      />
     </main>
   );
 };
