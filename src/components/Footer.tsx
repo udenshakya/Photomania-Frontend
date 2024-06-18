@@ -6,7 +6,7 @@ const Footer = () => {
         className="h-12 w-28  object-cover"
         alt="photomania"
       />{" "}
-      <div className="text-white">Copyright &copy; 2022</div>
+      <div className="text-white">Copyright &copy; 2024</div>
     </div>
   );
 };
