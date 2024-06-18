@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
 import CreatePostModal from "./CreatePostModal";
 import LoginModal from "./LoginModal";
@@ -13,6 +13,8 @@ const Navbar = () => {
   const [createPost, setCreatePost] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) setLoggedIn(true);
@@ -22,6 +24,7 @@ const Navbar = () => {
     Cookies.remove("token");
     setLoggedIn(false);
     toast.success("Logout successful");
+    navigate("/");
   };
 
   return (

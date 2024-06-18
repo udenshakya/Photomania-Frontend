@@ -77,6 +77,7 @@ const SinglePost = ({ isOpen, onClose, post }: SinglePostProps) => {
           isOpen={isUpdateModalOpen}
           onClose={handleCloseUpdateModal}
           post={post}
+          closeSinglePostModal={onClose}
         />
         <DeletePost
           isOpen={isDeleteModalOpen}
