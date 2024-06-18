@@ -9,8 +9,11 @@ import Modal from "../components/Modal";
 import { queryClient } from "../main";
 
 const updatePostSchema = z.object({
-  caption: z.string().min(1, { message: "Caption is required" }),
-  description: z.string().min(1, { message: "Description is required" }),
+  caption: z.string().min(1, { message: "Caption is required" }).optional(),
+  description: z
+    .string()
+    .min(1, { message: "Description is required" })
+    .optional(),
   myFile: z
     .optional(z.instanceof(FileList))
     .refine((files) => !files || files.length > 0, {
@@ -23,6 +26,7 @@ type FormData = z.infer<typeof updatePostSchema>;
 type UpdatePostModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  closeSinglePostModal: () => void;
   post: {
     id: number;
     caption: string;
@@ -31,9 +35,14 @@ type UpdatePostModalProps = {
   } | null; // Ensure post can be null initially
 };
 
-const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
+const UpdatePost = ({
+  isOpen,
+  onClose,
+  post,
+  closeSinglePostModal,
+}: UpdatePostModalProps) => {
   const [preview, setPreview] = useState<string | null>(post?.imageUrl || null);
-  console.log(post);
+
   const {
     register,
     handleSubmit,
@@ -44,6 +53,7 @@ const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
     defaultValues: {
       caption: post?.caption || "",
       description: post?.description || "",
+      imageUrl: post?.imageUrl || "",
     },
   });
 
@@ -52,16 +62,17 @@ const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
       reset({
         caption: post.caption,
         description: post.description,
+        imageUrl: post.imageUrl,
       });
       setPreview(post.imageUrl);
     }
   }, [post, reset]);
 
-  const { mutate, isLoading, error } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: async (data: FormData) => {
       const formData = new FormData();
-      formData.append("caption", data.caption);
-      formData.append("description", data.description);
+      if (data.caption) formData.append("caption", data.caption);
+      if (data.description) formData.append("description", data.description);
       if (data.myFile) {
         formData.append("myFile", data.myFile[0]);
       }
@@ -87,7 +98,10 @@ const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
     },
     onSuccess: async (data) => {
       toast.success("Post updated successfully!");
-      await queryClient.invalidateQueries("posts");
+      await queryClient.invalidateQueries({
+        queryKey: ["posts"],
+      });
+      closeSinglePostModal();
       onClose();
     },
     onError: (error) => {
@@ -173,7 +187,7 @@ const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
                 type="file"
                 id="myFile"
                 {...register("myFile")}
-                className="opacity-0"
+                className=""
                 onChange={handleFileChange}
               />
               {errors.myFile && (
@@ -187,11 +201,11 @@ const UpdatePost = ({ isOpen, onClose, post }: UpdatePostModalProps) => {
           <button
             type="submit"
             className={`mt-10 text-white bg-purple-950 transition-all duration-150 p-2 rounded-xl w-[30%] mx-auto ${
-              isLoading ? "cursor-not-allowed" : ""
+              isPending ? "cursor-not-allowed" : ""
             }`}
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? "Updating Post..." : "Update Post"}
+            {isPending ? "Updating Post..." : "Update Post"}
           </button>
           {error && <p className="text-red-500">{(error as Error).message}</p>}
         </form>
