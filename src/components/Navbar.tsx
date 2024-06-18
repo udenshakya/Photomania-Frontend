@@ -21,10 +21,10 @@ const Navbar = () => {
   }, [login]);
 
   const handleLogout = () => {
+    navigate("/");
     Cookies.remove("token");
     setLoggedIn(false);
     toast.success("Logout successful");
-    navigate("/");
   };
 
   return (
