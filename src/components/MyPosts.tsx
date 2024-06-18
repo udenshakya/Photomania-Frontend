@@ -1,8 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { useState } from "react";
+import SinglePost from "../pages/SinglePost";
 import Loader from "./Loader";
 
 const MyPosts = () => {
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [singlePostModalOpen, setSinglePostModalOpen] = useState(false);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["myposts"],
     queryFn: async () => {
@@ -26,11 +31,19 @@ const MyPosts = () => {
   if (isLoading) return <Loader />;
   if (error) return <div>Error fetching posts</div>;
 
-  console.log(data);
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setSinglePostModalOpen(true);
+  };
+
+  const handleCloseSinglePostModal = () => {
+    setSelectedPost(null);
+    setSinglePostModalOpen(false);
+  };
 
   return (
     <main className=" ">
-      <h1 className="text-center text-3xl mt-4 font-semibold">My Posts</h1>
+      <h1 className="text-center text-3xl mt-10  font-semibold">My Posts</h1>
       <h2 className="text-center text-lg mt-2">Your personal collection</h2>
       <div className="p-5 md:p-10">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 w-full mx-auto h-auto space-y-3 pb-28">
@@ -60,6 +73,13 @@ const MyPosts = () => {
           ))}
         </div>
       </div>
+      {selectedPost && (
+        <SinglePost
+          isOpen={singlePostModalOpen}
+          onClose={handleCloseSinglePostModal}
+          post={selectedPost}
+        />
+      )}
     </main>
   );
 };
