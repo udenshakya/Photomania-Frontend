@@ -1,10 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegUser } from "react-icons/fa";
+import EditProfileModal from "../components/EditProfileModal";
 import MyPosts from "../components/MyPosts";
 
 const Profile = () => {
+  const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
+  const [modal, setModal] = useState("");
   const token = Cookies.get("token");
   const decoded = JSON.parse(atob(token?.split(".")[1] || ""));
 
@@ -15,12 +19,15 @@ const Profile = () => {
   } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/post/my", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/api/users/my`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch profile data");
@@ -31,13 +38,14 @@ const Profile = () => {
     },
   });
 
-  const { mutate, isLoading: uploadLoading } = useMutation({
+  // For uploading image
+  const { mutate, isPending: uploadLoading } = useMutation({
     mutationFn: async (file) => {
       console.log(file);
       const formData = new FormData();
       formData.append("myFile", file);
       const response = await fetch(
-        `http://localhost:8000/api/users/${decoded.id}/image`,
+        `${import.meta.env.VITE_SERVER_URL}/api/users/${decoded.id}/image`,
         {
           method: "POST",
           headers: {
@@ -78,11 +86,11 @@ const Profile = () => {
     <div className="min-h-screen mt-6">
       <div className="h-[50vh] w-full flex justify-center">
         <div>
-          <div className="bg-gray-200 h-32 w-32 rounded-full flex mx-auto justify-center items-center">
+          <div className="bg-gray-200 h-40 w-40 rounded-full flex mx-auto justify-center items-center">
             {user?.imageUrl ? (
               <img
-                src={`http://localhost:8000/${user?.imageUrl}`}
-                className="h-24 w-24 rounded-full"
+                src={`${import.meta.env.VITE_SERVER_URL}/${user?.imageUrl}`}
+                className="h-[140px] w-[140px] rounded-full"
                 alt="Profile"
               />
             ) : (
@@ -94,9 +102,9 @@ const Profile = () => {
           <div>
             <label
               htmlFor="image"
-              className="bg-purple-900 text-white flex justify-center items-center rounded-full mt-8 mx-auto px-5 w-1/2 py-2 cursor-pointer"
+              className="bg-purple-900 text-white flex justify-center items-center rounded-full mt-8 mx-auto w-[65%] py-2 cursor-pointer"
             >
-              {uploadLoading ? "Uploading..." : "Add Image"}
+              {uploadLoading ? "Uploading..." : "Upload Image"}
             </label>
             <input
               type="file"
@@ -105,7 +113,10 @@ const Profile = () => {
               className="hidden"
             />
           </div>
-          <button className="bg-purple-900 text-white flex justify-center items-center rounded-full mt-5 mx-auto px-5 py-2">
+          <button
+            className="bg-purple-900 text-white flex justify-center items-center rounded-full mt-5 mx-auto px-5 py-2"
+            onClick={() => setEditProfileModalOpen(true)}
+          >
             Edit Profile
           </button>
           <h1 className="mt-6 text-lg mb-1">
@@ -119,6 +130,10 @@ const Profile = () => {
         </div>
       </div>
       <MyPosts />
+      <EditProfileModal
+        isOpen={editProfileModalOpen}
+        onClose={() => setEditProfileModalOpen(false)}
+      />
     </div>
   );
 };

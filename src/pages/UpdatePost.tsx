@@ -80,7 +80,7 @@ const UpdatePost = ({
       const token = Cookies.get("token");
 
       const response = await fetch(
-        `http://localhost:8000/api/post/${post?.id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/post/${post?.id}`,
         {
           method: "PUT",
           body: formData,

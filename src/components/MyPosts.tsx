@@ -14,7 +14,7 @@ const MyPosts = () => {
       const token = Cookies.get("token");
       const decoded = JSON.parse(atob(token?.split(".")[1] || ""));
       const response = await fetch(
-        `http://localhost:8000/api/users/${decoded.id}/posts`,
+        `${import.meta.env.VITE_SERVER_URL}/api/users/${decoded.id}/posts`,
         {
           method: "GET",
           headers: {

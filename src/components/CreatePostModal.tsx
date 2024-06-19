@@ -46,13 +46,16 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
       const token = Cookies.get("token");
 
-      const response = await fetch("http://localhost:8000/api/post", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/api/post`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create post");

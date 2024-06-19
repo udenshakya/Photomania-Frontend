@@ -32,13 +32,16 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
 
   const { mutate, error } = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await fetch("http://localhost:8000/api/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/api/users/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       const result = await response.json();
 

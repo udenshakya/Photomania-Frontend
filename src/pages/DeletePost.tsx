@@ -27,7 +27,7 @@ const DeletePost = ({
       console.log(decoded);
 
       const response = await fetch(
-        `http://localhost:8000/api/post/${post.id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/post/${post.id}`,
         {
           method: "DELETE",
           headers: {
