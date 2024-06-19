@@ -70,8 +70,9 @@ const Profile = () => {
     },
   });
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
     if (file) {
       mutate(file);
     }
