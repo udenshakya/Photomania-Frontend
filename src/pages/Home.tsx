@@ -12,7 +12,7 @@ const Home = () => {
 
   const fetchData = async ({ pageParam = 1 }) => {
     const response = await fetch(
-      `http://localhost:8000/api/post/all?page=${pageParam}&pageSize=${pageSize}`
+      `${import.meta.env.VITE_SERVER_URL}/api/post/all?page=${pageParam}&pageSize=${pageSize}`
     );
     const data = await response.json();
     return data;
