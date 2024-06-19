@@ -48,10 +48,7 @@ const Navbar = () => {
           </Link>
           {loggedIn && (
             <>
-              <Button
-                className={"bg-red-600"}
-                onClick={() => setCreatePost(true)}
-              >
+              <Button className={""} onClick={() => setCreatePost(true)}>
                 Create Post
               </Button>
               <Link

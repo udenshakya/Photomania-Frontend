@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useLocation } from "react-router-dom";
 import Modal from "../components/Modal";
 import { queryClient } from "../main";
 
@@ -19,6 +20,7 @@ const DeletePost = ({
   closeSinglePostModal,
 }: DeletePostProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -43,12 +45,10 @@ const DeletePost = ({
       return response.json();
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      });
+      await queryClient.invalidateQueries(["posts", "profile"]);
       toast.success("Post deleted successfully!");
       closeSinglePostModal();
-      navigate("/");
+      navigate(pathname === "/profile" ? "/profile" : "/");
       onClose();
     },
     onError: (error) => {
@@ -65,7 +65,7 @@ const DeletePost = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-[70vw] h-[70vh] flex flex-col items-center justify-center">
+      <div className="w-[60vw] h-[60vh] flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-5">
           Are you sure you want to delete this post?
         </h1>

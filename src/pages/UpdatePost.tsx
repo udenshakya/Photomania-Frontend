@@ -14,11 +14,7 @@ const updatePostSchema = z.object({
     .string()
     .min(1, { message: "Description is required" })
     .optional(),
-  myFile: z
-    .optional(z.instanceof(FileList))
-    .refine((files) => !files || files.length > 0, {
-      message: "Image is required",
-    }),
+  myFile: z.instanceof(FileList).optional(),
 });
 
 type FormData = z.infer<typeof updatePostSchema>;
@@ -32,7 +28,7 @@ type UpdatePostModalProps = {
     caption: string;
     description: string;
     imageUrl: string;
-  } | null; // Ensure post can be null initially
+  } | null;
 };
 
 const UpdatePost = ({
@@ -53,7 +49,6 @@ const UpdatePost = ({
     defaultValues: {
       caption: post?.caption || "",
       description: post?.description || "",
-      imageUrl: post?.imageUrl || "",
     },
   });
 
@@ -62,7 +57,6 @@ const UpdatePost = ({
       reset({
         caption: post.caption,
         description: post.description,
-        imageUrl: post.imageUrl,
       });
       setPreview(post.imageUrl);
     }
@@ -73,7 +67,7 @@ const UpdatePost = ({
       const formData = new FormData();
       if (data.caption) formData.append("caption", data.caption);
       if (data.description) formData.append("description", data.description);
-      if (data.myFile) {
+      if (data.myFile?.length) {
         formData.append("myFile", data.myFile[0]);
       }
 
@@ -98,9 +92,7 @@ const UpdatePost = ({
     },
     onSuccess: async (data) => {
       toast.success("Post updated successfully!");
-      await queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      });
+      await queryClient.invalidateQueries(["posts", "profile"]);
       closeSinglePostModal();
       onClose();
     },
@@ -128,7 +120,7 @@ const UpdatePost = ({
   };
 
   if (!post) {
-    return null; // Handle case where post is null (optional)
+    return null;
   }
 
   return (

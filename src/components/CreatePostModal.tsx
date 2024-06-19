@@ -65,7 +65,8 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
     },
     onSuccess: async (data) => {
       console.log(data.message);
-      await queryClient.invalidateQueries("posts");
+      await queryClient.invalidateQueries(["posts", "profile"]);
+
       toast.success("Post created successfully!");
       reset();
       setPreview(null);
