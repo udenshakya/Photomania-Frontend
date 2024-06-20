@@ -1,14 +1,19 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useState } from "react";
+import AvatarEditor from "react-avatar-edit";
 import toast from "react-hot-toast";
 import { FaRegUser } from "react-icons/fa";
 import EditProfileModal from "../components/EditProfileModal";
+import Modal from "../components/Modal"; // Import your custom modal
 import MyPosts from "../components/MyPosts";
+import { queryClient } from "../main";
 
 const Profile = () => {
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
-  const [modal, setModal] = useState("");
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const token = Cookies.get("token");
   const decoded = JSON.parse(atob(token?.split(".")[1] || ""));
 
@@ -41,7 +46,6 @@ const Profile = () => {
   // For uploading image
   const { mutate, isPending: uploadLoading } = useMutation({
     mutationFn: async (file) => {
-      console.log(file);
       const formData = new FormData();
       formData.append("myFile", file);
       const response = await fetch(
@@ -64,17 +68,43 @@ const Profile = () => {
     },
     onSuccess: () => {
       toast.success("Image uploaded successfully");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+
+      setCropModalOpen(false);
     },
     onError: () => {
       toast.error("Failed to upload image");
     },
   });
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    console.log(file);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
-      mutate(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedFile(reader.result as string);
+        setCropModalOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onCrop = (view) => {
+    setPreview(view);
+  };
+
+  const onClose = () => {
+    setPreview(null);
+  };
+
+  const handleSave = () => {
+    if (preview) {
+      fetch(preview)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+          mutate(file);
+        });
     }
   };
 
@@ -136,6 +166,24 @@ const Profile = () => {
         isOpen={editProfileModalOpen}
         onClose={() => setEditProfileModalOpen(false)}
       />
+      <Modal isOpen={cropModalOpen} onClose={() => setCropModalOpen(false)}>
+        <AvatarEditor
+          width={390}
+          height={295}
+          onCrop={onCrop}
+          onClose={onClose}
+          src={selectedFile}
+          borderRadius={195}
+        />
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleSave}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          >
+            Save
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
