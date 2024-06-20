@@ -1,6 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { FaRegUser } from "react-icons/fa6";
 import { useInView } from "react-intersection-observer";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Loader from "../components/Loader";
 import SinglePost from "./SinglePost";
 
@@ -23,18 +25,15 @@ const Home = () => {
       queryKey: ["posts"],
       queryFn: ({ pageParam }) => fetchData({ pageParam }),
       initialPageParam: 1,
-      getNextPageParam: (lastPage) => {
-        return lastPage.page < lastPage.totalPages
-          ? lastPage.page + 1
-          : undefined;
-      },
+      getNextPageParam: (lastPage) =>
+        lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     });
 
   useEffect(() => {
-    if (inView) {
+    if (inView && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, fetchNextPage]);
+  }, [inView, isFetchingNextPage, fetchNextPage]);
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
@@ -59,39 +58,57 @@ const Home = () => {
             Share your thoughts and moments with the world
           </h2>
           <div className="p-5 md:p-10">
-            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 w-full mx-auto h-auto space-y-3 pb-28">
-              {data?.pages.map((page) =>
-                page.data.map((item) => (
-                  <div
-                    key={item.id}
-                    className="break-inside-avoid bg-white shadow-md rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-150 cursor-pointer relative"
-                    onClick={() => handlePostClick(item)}
-                  >
-                    <div className="relative  group ">
-                      <img
-                        className="w-full h-auto"
-                        src={item.imageUrl}
-                        alt={item.caption}
-                      />
-                      <div className="absolute bottom-1 left-1 rounded-md px-2 py-1 bg-purple-950  hidden group-hover:block ">
-                        <p className="text-white ">
-                          Author: {item.user.username}
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 0: 1, 600: 2, 900: 3, 1200: 4 }}
+            >
+              <Masonry gutter="20px">
+                {data?.pages.map((page) =>
+                  page.data.map((item) => (
+                    <div
+                      key={item.id}
+                      className="break-inside-avoid bg-white shadow-md rounded-lg overflow-hidden hover:bg-gray-100 transition-all duration-150 cursor-pointer relative"
+                      onClick={() => handlePostClick(item)}
+                      style={{ marginBottom: "20px" }}
+                    >
+                      <div className="relative group">
+                        <img
+                          className="w-full h-auto"
+                          src={item.imageUrl}
+                          alt={item.caption}
+                        />
+                        <div className="absolute bottom-1 left-0 rounded-md px-2 py-1  group-hover:block  hidden">
+                          <div className="flex items-center justify-center gap-2 rounded-full px-3 py-1 bg-gray-800/70">
+                            {item?.user.imageUrl ? (
+                              <img
+                                src={`${import.meta.env.VITE_SERVER_URL}/${item?.user.imageUrl}`}
+                                className="h-[40px] w-[40px] rounded-full"
+                                alt="Profile"
+                              />
+                            ) : (
+                              <div className="h-[40px] w-[40px] bg-gray-200 p-2 flex justify-center items-center rounded-full font-thin">
+                                <FaRegUser />
+                              </div>
+                            )}{" "}
+                            <p className="text-white font-bold">
+                              {item.user.username}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <p className="font-bold break-words">{item.caption}</p>
+                        <p className="mt-2 text-gray-600 text-sm">
+                          {new Date(item.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
-                    <div className="p-4 ">
-                      <p className="font-bold break-words">{item.caption}</p>
-                      <p className="mt-2 text-gray-600">
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            <div ref={ref} className="text-center">
-              {isFetchingNextPage && <Loader />}
-            </div>
+                  ))
+                )}
+              </Masonry>
+            </ResponsiveMasonry>
+          </div>
+          <div ref={ref} className="text-center">
+            {isFetchingNextPage && <Loader />}
           </div>
         </>
       )}
