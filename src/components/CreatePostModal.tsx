@@ -14,8 +14,14 @@ type CreatePostModalProps = {
 };
 
 const createPostSchema = z.object({
-  caption: z.string().min(1, { message: "Caption is required" }),
-  description: z.string().min(1, { message: "Description is required" }),
+  caption: z
+    .string()
+    .min(1, { message: "Caption is required" })
+    .max(40, { message: "Caption cannot be more than 40 characters" }),
+  description: z
+    .string()
+    .min(1, { message: "Description is required" })
+    .max(300, "Description cannot be more than 200 characters"),
   myFile: z
     .instanceof(FileList)
     .refine((files) => files.length > 0, { message: "Image is required" }),
@@ -63,9 +69,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
       return response.json();
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       console.log(data.message);
-      await queryClient.invalidateQueries(["posts", "profile"]);
+      queryClient.invalidateQueries({ queryKey: ["myposts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
 
       toast.success("Post created successfully!");
       reset();
@@ -155,6 +162,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
               <input
                 type="file"
                 id="myFile"
+                accept="image/*"
                 {...register("myFile")}
                 className="opacity-0"
                 onChange={handleFileChange}

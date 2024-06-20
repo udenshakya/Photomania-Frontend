@@ -90,9 +90,10 @@ const UpdatePost = ({
 
       return response.json();
     },
-    onSuccess: async (data) => {
+    onSuccess: () => {
       toast.success("Post updated successfully!");
-      await queryClient.invalidateQueries(["posts", "profile"]);
+      queryClient.invalidateQueries({ queryKey: ["myposts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       closeSinglePostModal();
       onClose();
     },

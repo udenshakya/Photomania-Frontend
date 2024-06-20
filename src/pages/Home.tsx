@@ -79,8 +79,8 @@ const Home = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <p className="font-bold text-lg">{item.caption}</p>
+                    <div className="p-4 ">
+                      <p className="font-bold break-words">{item.caption}</p>
                       <p className="mt-2 text-gray-600">
                         {new Date(item.createdAt).toLocaleDateString()}
                       </p>

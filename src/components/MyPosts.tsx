@@ -64,7 +64,7 @@ const MyPosts = () => {
                 </div>
               </div>
               <div className="p-4">
-                <p className="font-bold text-lg">{item.caption}</p>
+                <p className="font-bold text-lg break-words">{item.caption}</p>
                 <p className="mt-2 text-gray-600">
                   {new Date(item.createdAt).toLocaleDateString()}
                 </p>

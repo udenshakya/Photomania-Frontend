@@ -44,8 +44,10 @@ const DeletePost = ({
 
       return response.json();
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(["posts", "profile"]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myposts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+
       toast.success("Post deleted successfully!");
       closeSinglePostModal();
       navigate(pathname === "/profile" ? "/profile" : "/");
