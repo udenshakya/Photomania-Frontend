@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { useState } from "react";
+import { FaRegUser } from "react-icons/fa6";
 import Modal from "../components/Modal";
 import DeletePost from "./DeletePost";
 import UpdatePost from "./UpdatePost";
@@ -42,14 +43,14 @@ const SinglePost = ({ isOpen, onClose, post }: SinglePostProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-[90vw] h-[85vh]">
-        <div className="flex w-full items-center gap-20">
+        <div className="lg:flex  w-[80vw] items-center lg:gap-20">
           <img
-            className="h-[80vh] w-1/2 object-contain rounded-lg ml-10"
+            className="lg:h-[80vh] h-[40vh] lg:w-1/2 w-full mt-10 lg:mt-0 object-contain rounded-lg ml-10"
             src={post.imageUrl}
             alt={post.caption}
           />
-          <div className="w-1/2 justify-between h-[60vh] relative">
-            <h2 className="text-2xl font-bold text-start break-words md:w-full   ">
+          <div className="lg:w-1/2 w-full mx-auto lg:h-[60vh] px-3 ml-7 ">
+            <h2 className="text-2xl font-bold text-start break-words md:w-full mt-10 lg:mt-0  ">
               {post.caption}
             </h2>
             {decoded && decoded.id === post.user.id && (
@@ -68,13 +69,26 @@ const SinglePost = ({ isOpen, onClose, post }: SinglePostProps) => {
                 </button>
               </div>
             )}
-            <h3 className="text-md mt-2">Author: {post.user.username}</h3>
-            <p className="text-gray-600   mt-10 break-words text-md ">
-              {post.description}
-            </p>
-
-            <p className="text-gray-600 absolute bottom-0 left-1 text-sm">
+            <div className="flex gap-2 mt-3 mb-2">
+              {post?.user.imageUrl ? (
+                <img
+                  src={`${import.meta.env.VITE_SERVER_URL}/${post?.user.imageUrl}`}
+                  className="h-[40px] w-[40px] rounded-full"
+                  alt="Profile"
+                />
+              ) : (
+                <div className="h-[40px] w-[40px] bg-gray-200 p-2 flex justify-center items-center rounded-full font-thin">
+                  <FaRegUser />
+                </div>
+              )}{" "}
+              <h3 className="text-md mt-2">{post.user.username}</h3>
+            </div>
+            <p className="text-gray-600  text-sm">
               {new Date(post.createdAt).toLocaleDateString()}
+            </p>
+            <p className="text-gray-600 mt-2  lg:mt-10 break-words text-md ">
+              <p> Description:</p>
+              <p mt-2>{post.description}</p>
             </p>
           </div>
         </div>

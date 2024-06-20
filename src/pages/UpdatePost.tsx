@@ -141,7 +141,7 @@ const UpdatePost = ({
                 <img
                   src={preview}
                   alt="Preview"
-                  className="h-full object-cover rounded-lg cursor-pointer"
+                  className="h-full object-cover rounded-lg cursor-pointer mx-auto"
                 />
               ) : (
                 <div className="bg-gray-200 w-full h-full flex justify-center items-center">
@@ -180,7 +180,7 @@ const UpdatePost = ({
                 type="file"
                 id="myFile"
                 {...register("myFile")}
-                className=""
+                className="opacity-0"
                 onChange={handleFileChange}
               />
               {errors.myFile && (

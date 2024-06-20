@@ -104,25 +104,27 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-[70vw] h-[85vh]">
-        <p className="text-3xl text-center font-bold mb-10 mt-5">Create Post</p>
+      <div className="w-[70vw] h-[85vh] ">
+        <p className="text-3xl text-center font-bold lg:mb-10 mt-5">
+          Create Post
+        </p>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-7 md:px-11 px-10"
+          className="flex flex-col mt-10 lg:mt-0  md:px-11 px-10"
         >
-          <div className="flex gap-20 ">
+          <div className="lg:flex lg:gap-20 ">
             <label
               htmlFor="myFile"
-              className="h-[50vh] w-[500px] cursor-pointer"
+              className="lg:h-[50vh] lg:w-[500px]  cursor-pointer"
             >
               {preview ? (
                 <img
                   src={preview}
                   alt="Preview"
-                  className="h-full object-cover rounded-lg cursor-pointer "
+                  className="lg:h-full h-[30vh] mx-auto object-cover rounded-lg cursor-pointer "
                 />
               ) : (
-                <div className="bg-gray-200 w-full h-full flex justify-center items-center">
+                <div className="bg-gray-200 lg:w-full lg:h-full h-[30vh] flex justify-center items-center">
                   <p>Upload Image</p>
                   {/* <img
                     src="/Upload.png"
@@ -132,8 +134,10 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
                 </div>
               )}
             </label>
-            <div className="flex flex-col gap-4 w-[40%] h-[57vh]">
-              <label htmlFor="caption">Caption</label>
+            <div className="flex flex-col gap-4 lg:w-[40%]  w-full lg:h-[57vh] h-[30vh]">
+              <label htmlFor="caption" className="mt-10 lg:mt-0">
+                Caption
+              </label>
               <input
                 type="text"
                 {...register("caption")}
@@ -177,7 +181,7 @@ const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
 
           <button
             type="submit"
-            className={`mt-10 text-white bg-purple-950 transition-all duration-150 p-2 rounded-xl w-[30%] mx-auto ${
+            className={`lg:mt-10 mt-0 text-white bg-purple-950 p-2 rounded-xl lg:w-[30%] w-full  mx-auto ${
               isPending ? "cursor-not-allowed" : ""
             }`}
             disabled={isPending}

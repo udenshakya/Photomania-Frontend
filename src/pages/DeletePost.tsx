@@ -67,7 +67,7 @@ const DeletePost = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-[60vw] h-[60vh] flex flex-col items-center justify-center">
+      <div className="w-[40vw] h-[30vh] flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-5">
           Are you sure you want to delete this post?
         </h1>

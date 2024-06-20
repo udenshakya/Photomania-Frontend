@@ -37,7 +37,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
         ref={modalRef}
-        className="bg-white p-4 rounded-2xl shadow-lg flex flex-col relative py-10 pb-10 min-w-[40%]"
+        className="bg-white p-4 rounded-2xl shadow-lg flex flex-col relative py-10 pb-10 min-w-[30%]"
       >
         <button className="absolute top-2 right-2" onClick={onClose}>
           <div className="text-3xl">

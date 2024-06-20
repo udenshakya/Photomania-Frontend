@@ -167,21 +167,23 @@ const Profile = () => {
         onClose={() => setEditProfileModalOpen(false)}
       />
       <Modal isOpen={cropModalOpen} onClose={() => setCropModalOpen(false)}>
-        <AvatarEditor
-          width={390}
-          height={295}
-          onCrop={onCrop}
-          onClose={onClose}
-          src={selectedFile}
-          borderRadius={195}
-        />
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handleSave}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-          >
-            Save
-          </button>
+        <div className=" lg:w-[80%] w-[20%] mx-auto ml-20  ">
+          <AvatarEditor
+            width={390}
+            height={295}
+            onCrop={onCrop}
+            onClose={onClose}
+            src={selectedFile}
+            borderRadius={195}
+          />
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={handleSave}
+              className="bg-purple-900 text-white px-4 py-2 rounded-lg"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </Modal>
     </div>

@@ -9,6 +9,7 @@ import Modal from "./Modal";
 type LoginModalProps = {
   login: boolean;
   setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  setRegister: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const loginSchema = z.object({
@@ -20,7 +21,7 @@ const loginSchema = z.object({
 
 type FormData = z.infer<typeof loginSchema>;
 
-const LoginModal = ({ login, setLogin }: LoginModalProps) => {
+const LoginModal = ({ login, setLogin, setRegister }: LoginModalProps) => {
   const {
     register: formRegister,
     handleSubmit,
@@ -32,7 +33,6 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
 
   const { mutate, error } = useMutation({
     mutationFn: async (data: FormData) => {
-      //   console.log(error);
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_URL}/api/users/login`,
         {
@@ -54,7 +54,6 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
     },
     onSuccess: (data) => {
       toast.success("Login successful!");
-      //   localStorage.setItem("token", data.token);
       Cookies.set("token", data.token);
       setLogin(false);
       reset();
@@ -74,7 +73,7 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
       <p className="text-3xl text-center font-bold mb-10 mt-5">Login</p>
       <form
         onSubmit={handleSubmit(submitData)}
-        className="flex flex-col gap-2 md:px-32 px-10"
+        className="flex flex-col gap-2 md:px-14 px-10"
       >
         <label htmlFor="email">Email</label>
         <input
@@ -105,6 +104,18 @@ const LoginModal = ({ login, setLogin }: LoginModalProps) => {
         </button>
         {error && <p className="text-red-500">{error.message}</p>}
       </form>
+      <p className="text-center mt-4">
+        Don't have an account?{" "}
+        <span
+          className="text-purple-700 cursor-pointer"
+          onClick={() => {
+            setLogin(false);
+            setRegister(true);
+          }}
+        >
+          Register
+        </span>
+      </p>
     </Modal>
   );
 };

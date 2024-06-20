@@ -88,7 +88,7 @@ const Home = () => {
                               <div className="h-[40px] w-[40px] bg-gray-200 p-2 flex justify-center items-center rounded-full font-thin">
                                 <FaRegUser />
                               </div>
-                            )}{" "}
+                            )}
                             <p className="text-white font-bold">
                               {item.user.username}
                             </p>
