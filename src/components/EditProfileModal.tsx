@@ -93,13 +93,13 @@ const EditProfileModal = ({ isOpen, onClose }: UpdateProfileModalProps) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-[60vw] h-[70vh]">
+      <div className=" lg:h-[65vh] h-[40vh]">
         <p className="text-3xl text-center font-bold mb-10 mt-5">
           Update Profile
         </p>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-7 md:px-11 px-10 w-[60%] mx-auto"
+          className="flex flex-col gap-4 md:px-4 px-2 w-[80%] mx-auto"
         >
           <div className="flex flex-col gap-4">
             <label htmlFor="username">Username</label>

@@ -8,6 +8,7 @@ import Modal from "./Modal";
 type RegisterModalProps = {
   register: boolean;
   setRegister: React.Dispatch<React.SetStateAction<boolean>>;
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const registerSchema = z.object({
@@ -20,7 +21,11 @@ const registerSchema = z.object({
 
 type FormData = z.infer<typeof registerSchema>;
 
-const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
+const RegisterModal = ({
+  register,
+  setRegister,
+  setLogin,
+}: RegisterModalProps) => {
   const {
     register: formRegister,
     handleSubmit,
@@ -54,7 +59,6 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
     onSuccess: (data) => {
       console.log("Registration successful:", data.message);
       toast.success("Register successful!");
-
       setRegister(false);
       reset();
     },
@@ -73,7 +77,7 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
       <p className="text-3xl text-center font-bold mb-10 mt-5">Register</p>
       <form
         onSubmit={handleSubmit(submitData)}
-        className="flex flex-col gap-2 md:px-32 px-10"
+        className="flex flex-col gap-2 md:px-14 px-10"
       >
         <label htmlFor="username">Username</label>
         <input
@@ -115,6 +119,18 @@ const RegisterModal = ({ register, setRegister }: RegisterModalProps) => {
         </button>
         {error && <p className="text-red-500">{error.message}</p>}
       </form>
+      <p className="text-center mt-4">
+        Already registered?{" "}
+        <span
+          className="text-purple-700 cursor-pointer"
+          onClick={() => {
+            setRegister(false);
+            setLogin(true);
+          }}
+        >
+          Login
+        </span>
+      </p>
     </Modal>
   );
 };
