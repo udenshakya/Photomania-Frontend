@@ -49,7 +49,7 @@ npm run dev
 
 ## ENV Variables
 
-      |
+      VITE_SERVER_URL=
 
 ## Figma Wireframe
 
